@@ -3,6 +3,8 @@ import numpy
 from extract_chroma import extract_a_channel,extract_b_channel,extract_l_channel
 import pickle
 import os
+import sys
+import progressbar
 
 
 def get_sift_features(image_path):
@@ -65,16 +67,24 @@ def process_images(image_paths, thread_no, DELETE_FILES_AFTER_PROCESSING):
 
     print ("Paths generated for thread " + str(thread_no))
 
-    for i in range(len(image_paths)):
+    #progress bar
+    if(thread_no==0):
+        bar = progressbar.ProgressBar(maxval=len(image_paths), widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+        bar.start()
 
-        print("Thread " + str(thread_no) + " working on " + str(i+1) + " out of " + str(len(image_paths)) + ' : ' + str(image_paths[i]))
+    for i in range(len(image_paths)):
+        if(thread_no==0):
+            bar.update(i+1)
+        
+        # sys.stdout.write("\rThread " + str(thread_no) + " working on " + str(i+1) + " out of " + str(len(image_paths)) + ' : ' + str(image_paths[i]))
+        # sys.stdout.flush()
         try:
             sift_features = get_sift_features(image_paths[i])
             a_channel_chroma = get_a_channel_chroma(image_paths[i])
             b_channel_chroma = get_b_channel_chroma(image_paths[i])
             l_channel_luminance = get_l_channel_luminance(image_paths[i])
         except:
-            print "Error"
+            print "Error processing " + image_paths[i]
         else:    
             save_blob(sift_features, sift_paths[i])
             save_blob(a_channel_chroma, a_channel_chroma_paths[i])

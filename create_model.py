@@ -69,8 +69,13 @@ def make_model(x, y):
 	                     loss='categorical_crossentropy', name='target')
 
 	# Training
-	model = tflearn.DNN(network, tensorboard_verbose=2)
-	model.fit({'input': x}, {'target': y} , n_epoch=100, batch_size=10)
+	model = tflearn.DNN(network,checkpoint_path="./model/intermediate_models/model.tfl.ckpt" ,tensorboard_verbose=0)
+	model.fit({'input': x}, {'target': y} , 
+		n_epoch=100, 
+		batch_size=10, 
+		show_metric=True, 
+		snapshot_epoch=True,
+		)
 
 	return model
 

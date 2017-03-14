@@ -1,5 +1,6 @@
 from glob import glob
 from os.path import exists, join, basename, splitext
+# import sys
 
 import multiprocessing as mp
 
@@ -54,10 +55,14 @@ def begin_threaded_execution():
     output = mp.Queue()
 
     process_list = []
+
+
     for ith_core in range(No_of_cores):
         # Building processes list
         start_point = images_per_core * ith_core
         end_point = images_per_core * (ith_core+1)
+
+        
 
         if ith_core != No_of_cores-1:
             sub_array = image_paths[start_point:end_point]
