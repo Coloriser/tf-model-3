@@ -89,21 +89,23 @@ def load_model(path):
 
 
 def prereq_load_and_compute( SIFT=False):
-    print("Loading feature paths")
-    if SIFT==True:
-        print("SIFT")
-        paths = hf.load_sift_paths('test')
+    print("Loading luma paths")
+    # if SIFT==True:
+    #     print("SIFT")
+    #     paths = hf.load_sift_paths('test')
 
-    else:
-        print("BRISK")
-        paths = hf.load_brisk_paths('test')
-    print("loading features...")
-    features = hf.load_features(paths)
+    # else:
+    #     print("BRISK")
+    #     paths = hf.load_brisk_paths('test')
+    paths = hf.load_luminance_paths('test')
+    print("loading luma...")
+    features = hf.load_luminance(paths)
+    # features = hf.load_features(paths)
     print(str(len(features)) + " items loaded.")    
     print("Normalizing features")
     modified_feature_arr = hf.normalize_array(features, mode = 'test')
     No_Of_Test_Items = len(modified_feature_arr)    
-
+    print("No of test items", No_Of_Test_Items)
 
     print("modifying the shape of input and output")
     test_x = np.array(modified_feature_arr).reshape([No_Of_Test_Items, modified_feature_arr[0].shape[0], modified_feature_arr[0].shape[1], 1])
@@ -140,14 +142,14 @@ def predict_and_dump(test_x, mode):
     print("Dumping predictions")
     if(mode == 'a'):
         hf.save_blob(predictions, 'predicted_a_chroma')
-        for i in range(len(predictions)):
-            a_channel_chroma = hf.scale_image(predictions[i])
-            hf.reconstruct(luminance[i], a_channel_chroma,b_channel_chromas[i], i, 'A')
+        # for i in range(len(predictions)):
+            # a_channel_chroma = hf.scale_image(predictions[i])
+            # hf.reconstruct(luminance[i], a_channel_chroma,b_channel_chromas[i], i, 'A')
     if(mode == 'b'):
         hf.save_blob(predictions, 'predicted_b_chroma')    
-        for i in range(len(predictions)):
-            b_channel_chroma = hf.scale_image(predictions[i])
-            hf.reconstruct(luminance[i], a_channel_chromas[i],b_channel_chroma, i, 'B')
+        # for i in range(len(predictions)):
+            # b_channel_chroma = hf.scale_image(predictions[i])
+            # hf.reconstruct(luminance[i], a_channel_chromas[i],b_channel_chroma, i, 'B')
     
 
 def main():

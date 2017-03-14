@@ -29,19 +29,17 @@ def make_model(x, y):
 
 	# Building convolutional network
 	network = input_data(shape=[None, x.shape[1], x.shape[2], 1], name='input')
+	print(network)
 
 	#1
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
-	print(network)
 	#2
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
-	print(network)
 	#3
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
-	print(network)
 	#4
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
@@ -63,32 +61,31 @@ def make_model(x, y):
 	#10
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
-
-	network = fully_connected(network, y.shape[1], activation='sigmoid')
+	
+network = fully_connected(network, y.shape[1], activation='sigmoid')
 	network = regression(network, optimizer='adam', learning_rate=0.01,
-	                     loss='categorical_crossentropy', name='target')
+	                     loss='sivankutty', name='target')
 
 	# Training
 	model = tflearn.DNN(network, tensorboard_verbose=2)
-	model.fit({'input': x}, {'target': y} , n_epoch=5, batch_size=10)
+	model.fit({'input': x}, {'target': y} , n_epoch=100)
 
 	return model
 
 
 def prereq_load_and_compute( mode , SIFT=False):
-	# if SIFT==True:
-	# 	print("SIFT")
-	# 	paths = hf.load_sift_paths('train')
-	# else:
-	# 	print("BRISK")
-	# 	paths = hf.load_brisk_paths('train')
-	paths = hf.load_luminance_paths('train')
-	print("loading luma...")
-	luma = hf.load_luminance(paths)
-	print(str(len(luma)) + " items loaded.")	
-	# print("Normalizing features")
-	# modified_feature_arr = hf.normalize_array(features)
-	No_Of_Test_Items = len(luma)
+	if SIFT==True:
+		print("SIFT")
+		paths = hf.load_sift_paths('train')
+	else:
+		print("BRISK")
+		paths = hf.load_brisk_paths('train')
+	print("loading features...")
+	features = hf.load_features(paths)
+	print(str(len(features)) + " items loaded.")	
+	print("Normalizing features")
+	modified_feature_arr = hf.normalize_array(features)
+	No_Of_Test_Items = len(modified_feature_arr)
 	
 	if mode=='a':
 		a_channel_paths = hf.load_a_channel_chroma_paths('train')
@@ -108,7 +105,7 @@ def prereq_load_and_compute( mode , SIFT=False):
 	train_y_channel = train_y_channel/256.0
 
 	print("modifying the shape of input and output")
-	train_x = np.array(luma).reshape([No_Of_Test_Items, luma[0].shape[0], luma[0].shape[1], 1])
+	train_x = np.array(modified_feature_arr).reshape([No_Of_Test_Items, modified_feature_arr[0].shape[0], modified_feature_arr[0].shape[1], 1])
 	
 	print("Pickling shapes")
 	hf.pickle_shape(train_x,train_y_channel)

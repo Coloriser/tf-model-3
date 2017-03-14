@@ -13,19 +13,26 @@ import pre_works_SIFT_train as pwt
 
 
 EXTENSIONS = [".jpg",".png"]
+MAX_IMAGES_TO_PROCESS = 2200
+#-1 for complete processing
+DELETE_FILES_AFTER_PROCESSING = True
 
-def get_image_paths(path="dataset/train"):
+def get_image_paths( max_size, path="dataset/train"):
     """Get the list of all image files in the train directory"""
     image_paths = []
     image_paths.extend([join(path, basename(fname))
                     for fname in glob(path + "/*")
                     if splitext(fname)[-1].lower() in EXTENSIONS])
+    print("Total IMAGES: ", len(image_paths))
+    if(max_size != -1):
+        image_paths = image_paths[:max_size]
+    # print("SIZE TO Be Processed: ", len(image_paths))
     return image_paths
 
 
 
 def begin_threaded_execution():
-    image_paths = get_image_paths()
+    image_paths = get_image_paths(MAX_IMAGES_TO_PROCESS)
 
     No_of_images = len( image_paths )
     No_of_cores = mp.cpu_count()
@@ -56,7 +63,7 @@ def begin_threaded_execution():
         else:
             sub_array = image_paths[start_point:]
         print("Beginning execution of thread " + str(ith_core)  + " with " + str(len(sub_array)) + " images")
-        process_list.append(mp.Process(target=pwt.process_images, args=(sub_array, ith_core)))
+        process_list.append(mp.Process(target=pwt.process_images, args=(sub_array, ith_core, DELETE_FILES_AFTER_PROCESSING)))
 
     for p in process_list:
         p.start()
@@ -65,5 +72,6 @@ def begin_threaded_execution():
     print("Processing done, saving paths.")
     pwt.save_paths( image_paths )
     print(str( len(image_paths) ) + " images processed. Proceed to training.") 
+    get_image_paths(-1)
 
 begin_threaded_execution()        
