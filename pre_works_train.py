@@ -13,9 +13,10 @@ import pre_works_SIFT_train as pwt
 
 
 EXTENSIONS = [".jpg",".png"]
-MAX_IMAGES_TO_PROCESS = 2200
-#-1 for complete processing
-DELETE_FILES_AFTER_PROCESSING = True
+MAX_IMAGES_TO_PROCESS = -1
+#-1 for complete processing. Else processes the threshold number of images.
+DELETE_FILES_AFTER_PROCESSING = False
+#If true deletes files that are processed.
 
 def get_image_paths( max_size, path="dataset/train"):
     """Get the list of all image files in the train directory"""

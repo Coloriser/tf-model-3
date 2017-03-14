@@ -80,7 +80,8 @@ def process_images(image_paths, thread_no, DELETE_FILES_AFTER_PROCESSING):
             save_blob(a_channel_chroma, a_channel_chroma_paths[i])
             save_blob(b_channel_chroma, b_channel_chroma_paths[i])
             save_blob(l_channel_luminance, l_channel_luminance_paths[i])
-            os.remove(image_paths[i])
+            if(DELETE_FILES_AFTER_PROCESSING):
+                os.remove(image_paths[i])
 
     return
 

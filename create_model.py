@@ -70,7 +70,7 @@ def make_model(x, y):
 
 	# Training
 	model = tflearn.DNN(network, tensorboard_verbose=2)
-	model.fit({'input': x}, {'target': y} , n_epoch=5, batch_size=10)
+	model.fit({'input': x}, {'target': y} , n_epoch=100, batch_size=10)
 
 	return model
 

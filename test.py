@@ -79,7 +79,7 @@ def load_model(path):
 
     network = fully_connected(network, y[1], activation='sigmoid')
     network = regression(network, optimizer='adam', learning_rate=0.01,
-                         loss='mean_square', name='target')
+                         loss='categorical_crossentropy', name='target')
 
 
 

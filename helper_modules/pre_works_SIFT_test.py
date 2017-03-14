@@ -64,8 +64,8 @@ def get_l_channel_luminance(image_path):
 def process_images(image_paths, thread_no):
 
     sift_paths = map(create_sift_path, image_paths)
-    # a_channel_chroma_paths = map(create_a_channel_chroma_path, image_paths)
-    # b_channel_chroma_paths = map(create_b_channel_chroma_path, image_paths)
+    a_channel_chroma_paths = map(create_a_channel_chroma_path, image_paths)
+    b_channel_chroma_paths = map(create_b_channel_chroma_path, image_paths)
     l_channel_luminance_paths = map(create_l_channel_luminance_path, image_paths)
 
     print ("Paths generated for thread " + str(thread_no))
@@ -74,8 +74,8 @@ def process_images(image_paths, thread_no):
         print("Thread " + str(thread_no) + " working on " + str(i+1) + " out of " + str(len(image_paths)) + ' : ' + str(image_paths[i]))
         try:
             sift_features = get_sift_features(image_paths[i])
-            # a_channel_chroma = get_a_channel_chroma(image_paths[i])
-            # b_channel_chroma = get_b_channel_chroma(image_paths[i])
+            a_channel_chroma = get_a_channel_chroma(image_paths[i])
+            b_channel_chroma = get_b_channel_chroma(image_paths[i])
             l_channel_luminance = get_l_channel_luminance(image_paths[i])
 
         except Exception as e:
@@ -83,20 +83,20 @@ def process_images(image_paths, thread_no):
 
         else:
             save_blob(sift_features, sift_paths[i])
-            # save_blob(a_channel_chroma, a_channel_chroma_paths[i])
-            # save_blob(b_channel_chroma, b_channel_chroma_paths[i])
+            save_blob(a_channel_chroma, a_channel_chroma_paths[i])
+            save_blob(b_channel_chroma, b_channel_chroma_paths[i])
             save_blob(l_channel_luminance, l_channel_luminance_paths[i])
     return    
 
 def save_paths( image_paths ):
     sift_paths = map(create_sift_path, image_paths)
-    # a_channel_chroma_paths = map(create_a_channel_chroma_path, image_paths)
-    # b_channel_chroma_paths = map(create_b_channel_chroma_path, image_paths)
+    a_channel_chroma_paths = map(create_a_channel_chroma_path, image_paths)
+    b_channel_chroma_paths = map(create_b_channel_chroma_path, image_paths)
     l_channel_luminance_paths = map(create_l_channel_luminance_path, image_paths)
 
     save_blob(sift_paths, "paths_for_test/sift_paths")
-    # save_blob(a_channel_chroma_paths, "paths_for_test/a_channel_chroma_paths")
-    # save_blob(b_channel_chroma_paths, "paths_for_test/b_channel_chroma_paths")
+    save_blob(a_channel_chroma_paths, "paths_for_test/a_channel_chroma_paths")
+    save_blob(b_channel_chroma_paths, "paths_for_test/b_channel_chroma_paths")
     save_blob(l_channel_luminance_paths, "paths_for_test/l_channel_luminance_paths")
     return
 
