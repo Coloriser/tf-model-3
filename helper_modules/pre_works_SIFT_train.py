@@ -69,7 +69,7 @@ def process_images(image_paths, thread_no, DELETE_FILES_AFTER_PROCESSING):
 
     #progress bar
     if(thread_no==0):
-        bar = progressbar.ProgressBar(maxval=len(image_paths), widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
+        bar = progressbar.ProgressBar(maxval=len(image_paths), widgets=[progressbar.Bar('=', 'Working: [', ']'), ' ', progressbar.Percentage()])
         bar.start()
 
     for i in range(len(image_paths)):

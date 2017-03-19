@@ -31,10 +31,12 @@ def make_model(x, y):
 	network = input_data(shape=[None, x.shape[1], x.shape[2], 1], name='input')
 
 	#1
+	# network = conv_2d(network, 128, activation='sigmoid', regularizer="L2")
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
 	print(network)
 	#2
+	# network = conv_2d(network, 128, activation='sigmoid', regularizer="L2")
 	network = fully_connected(network, 128, activation='sigmoid')
 	network = dropout(network, 0.8)
 	print(network)
@@ -69,7 +71,7 @@ def make_model(x, y):
 	                     loss='categorical_crossentropy', name='target')
 
 	# Training
-	model = tflearn.DNN(network,checkpoint_path="./model/intermediate_models/model.tfl.ckpt" ,tensorboard_verbose=0)
+	model = tflearn.DNN(network,checkpoint_path="./model/intermediate_models/model.ckpt" ,max_checkpoints=1,tensorboard_verbose=0)
 	model.fit({'input': x}, {'target': y} , 
 		n_epoch=100, 
 		batch_size=10, 
@@ -81,19 +83,23 @@ def make_model(x, y):
 
 
 def prereq_load_and_compute( mode , SIFT=False):
-	# if SIFT==True:
-	# 	print("SIFT")
-	# 	paths = hf.load_sift_paths('train')
-	# else:
-	# 	print("BRISK")
-	# 	paths = hf.load_brisk_paths('train')
+	if SIFT==True:
+		print("SIFT")
+		paths = hf.load_sift_paths('train')
+	else:
+		print("BRISK")
+		paths = hf.load_brisk_paths('train')
+	print("loading features...")
+	features = hf.load_features(paths)
+
 	paths = hf.load_luminance_paths('train')
-	print("loading luma...")
-	luma = hf.load_luminance(paths)
-	print(str(len(luma)) + " items loaded.")	
-	# print("Normalizing features")
-	# modified_feature_arr = hf.normalize_array(features)
-	No_Of_Test_Items = len(luma)
+	# print("loading luma...")
+	# luma = hf.load_luminance(paths)
+	# print(str(len(luma)) + " items loaded.")
+
+	print("Normalizing features")
+	modified_feature_arr = hf.normalize_array(features)
+	No_Of_Test_Items = len(modified_feature_arr)
 	
 	if mode=='a':
 		a_channel_paths = hf.load_a_channel_chroma_paths('train')
@@ -113,7 +119,7 @@ def prereq_load_and_compute( mode , SIFT=False):
 	train_y_channel = train_y_channel/256.0
 
 	print("modifying the shape of input and output")
-	train_x = np.array(luma).reshape([No_Of_Test_Items, luma[0].shape[0], luma[0].shape[1], 1])
+	train_x = np.array(modified_feature_arr).reshape([No_Of_Test_Items, modified_feature_arr[0].shape[0], modified_feature_arr[0].shape[1], 1])
 	
 	print("Pickling shapes")
 	hf.pickle_shape(train_x,train_y_channel)

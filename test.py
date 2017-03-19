@@ -47,14 +47,19 @@ def load_model(path):
     print(network)
 
     #1
+    # network = conv_2d(network, 128, activation='sigmoid', regularizer="L2")
     network = fully_connected(network, 128, activation='sigmoid')
     network = dropout(network, 0.8)
+    print(network)
     #2
+    # network = conv_2d(network, 128, activation='sigmoid', regularizer="L2")
     network = fully_connected(network, 128, activation='sigmoid')
     network = dropout(network, 0.8)
+    print(network)
     #3
     network = fully_connected(network, 128, activation='sigmoid')
     network = dropout(network, 0.8)
+    print(network)
     #4
     network = fully_connected(network, 128, activation='sigmoid')
     network = dropout(network, 0.8)
@@ -89,19 +94,23 @@ def load_model(path):
 
 
 def prereq_load_and_compute( SIFT=False):
+    print("Loading feature paths")
     print("Loading luma paths")
-    # if SIFT==True:
-    #     print("SIFT")
-    #     paths = hf.load_sift_paths('test')
+    if SIFT==True:
+        print("SIFT")
+        paths = hf.load_sift_paths('test')
 
-    # else:
-    #     print("BRISK")
-    #     paths = hf.load_brisk_paths('test')
-    paths = hf.load_luminance_paths('test')
-    print("loading luma...")
-    features = hf.load_luminance(paths)
-    # features = hf.load_features(paths)
+    else:
+        print("BRISK")
+        paths = hf.load_brisk_paths('test')
+    print("loading features...")
+    features = hf.load_features(paths)
     print(str(len(features)) + " items loaded.")    
+        
+    # paths = hf.load_luminance_paths('test')
+    # print("loading luma...")
+    # features = hf.load_luminance(paths)
+      
     print("Normalizing features")
     modified_feature_arr = hf.normalize_array(features, mode = 'test')
     No_Of_Test_Items = len(modified_feature_arr)    
@@ -155,6 +164,7 @@ def predict_and_dump(test_x, mode):
 def main():
 
     args = parse_arguments()
+    # recons
     DATASET_PATH = args.path
     mode = 'NONE'
     if not (args.a or args.b or args.ab): #Check if only one case is true

@@ -3,8 +3,6 @@ import numpy as np
 import skimage.color as color
 import skimage.io as io
 
-
-
 def load_from_pickle(path):
 	f = open(path, "rb")
 	value = pickle.load(f)
@@ -125,12 +123,30 @@ def reconstruct(l_arr,a_arr,b_arr, count, type):
     # print(a_arr.shape)
     # print(b_arr.shape)
     
-    img = np.vstack(([l_arr.T], [a_arr.T], [b_arr.T])).T
-    rgb_image = color.lab2rgb(img)
-    file_name = str(count)+"_" + type + ".jpg"
-    io.imsave("predicted_images/"+file_name, rgb_image)
-    print("Saved: " + file_name)
+    AB_img = np.vstack(([l_arr.T], [a_arr.T], [b_arr.T])).T
 
+    a_arr_empty = np.zeros(a_arr.shape)
+    b_arr_empty = np.zeros(b_arr.shape)
+    blk_img = np.vstack(([l_arr.T], [a_arr.T], [b_arr.T])).T
+
+    A_img = np.vstack(([l_arr.T], [a_arr.T], [b_arr_empty.T])).T
+
+    B_img = np.vstack(([l_arr.T], [a_arr_empty.T], [b_arr.T])).T
+
+    rgb_AB_image = color.lab2rgb(AB_img)
+    rgb_A_image = color.lab2rgb(A_img)
+    rgb_B_image = color.lab2rgb(B_img)
+    rgb_L_image = color.lab2rgb(blk_img)
+
+    file_name = str(count) 
+    io.imsave("predicted_images/"+file_name+"_AB.jpg", rgb_AB_image)
+    io.imsave("predicted_images/"+file_name+"_A.jpg", rgb_A_image)
+    io.imsave("predicted_images/"+file_name+"_B.jpg", rgb_B_image)
+    io.imsave("predicted_images/"+file_name+"_L.jpg", rgb_L_image)
+
+    print("Saved: " + file_name + ".jpg")
+
+ 
 def scale_image(chroma):
     chroma = np.array(chroma)
     chroma = chroma*256
